@@ -13,26 +13,31 @@ export default async function Home() {
       <section className="max-w-2xl text-center space-y-8">
         {/* Header */}
         <div className="space-y-4">
-          <div className="inline-block px-4 py-2 bg-[#FF6602] rounded-full mb-4">
+          <Link
+            href="https://donweb.cloud"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-[#FF6602] hover:bg-[#FF7722] rounded-full mb-4 transition-colors"
+          >
             <span className="text-white text-sm font-semibold tracking-wider">
               DONWEB CLOUD
             </span>
-          </div>
+          </Link>
           <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
             Demo taller Cloudflare
           </h1>
           {isCloudflare ? (
             <div className="space-y-2">
-              <p className="text-xl text-white/90 max-w-lg mx-auto leading-relaxed">
-                ✓ Protegido por Cloudflare
+              <p className="text-2xl text-balance text-white/90 max-w-lg mx-auto leading-relaxed">
+                ✅ Protegido por Cloudflare
               </p>
               <p className="text-sm text-white/70">
                 CF-Ray: {headersList.get('cf-ray')}
               </p>
             </div>
           ) : (
-            <p className="text-xl text-white/70 max-w-lg mx-auto leading-relaxed">
-              Aún no está protegido por Cloudflare
+            <p className="text-2xl text-balance text-white/70 max-w-lg mx-auto leading-relaxed">
+              ⚠️ Esta aplicación aún no está protegida por Cloudflare
             </p>
           )}
         </div>
