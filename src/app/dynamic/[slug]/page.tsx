@@ -11,13 +11,21 @@ interface DynamicPageProps {
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
+// Define the data structure
+interface DynamicPageData {
+  title: string
+  description: string
+  color: 'purple' | 'indigo' | 'orange'
+  features: string[]
+}
+
 // Simulate fetching data based on slug
-async function getDynamicData(slug: string) {
+async function getDynamicData(slug: string): Promise<DynamicPageData | null> {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 200))
 
   // Simulate different data based on slug
-  const dataMap: Record<string, any> = {
+  const dataMap: Record<string, DynamicPageData> = {
     'test': {
       title: 'Página de Prueba',
       description: 'Esta es una página de prueba para testing',
@@ -49,20 +57,20 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
     notFound()
   }
 
-  const colorClasses = {
+  const colorClasses: Record<DynamicPageData['color'], string> = {
     purple: 'from-purple-50 to-violet-100',
     indigo: 'from-indigo-50 to-blue-100',
     orange: 'from-orange-50 to-amber-100'
   }
 
-  const buttonColors = {
+  const buttonColors: Record<DynamicPageData['color'], string> = {
     purple: 'bg-purple-600 hover:bg-purple-700',
     indigo: 'bg-indigo-600 hover:bg-indigo-700',
     orange: 'bg-orange-600 hover:bg-orange-700'
   }
 
   return (
-    <main className={`min-h-dvh bg-gradient-to-br ${colorClasses[data.color as keyof typeof colorClasses]} p-8`}>
+    <main className={`min-h-dvh bg-gradient-to-br ${colorClasses[data.color]} p-8`}>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -180,19 +188,19 @@ export default async function DynamicPage({ params }: DynamicPageProps) {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/dynamic/test"
-              className={`px-4 py-2 ${buttonColors[data.color as keyof typeof buttonColors]} text-white rounded-lg font-semibold transition-colors`}
+              className={`px-4 py-2 ${buttonColors[data.color]} text-white rounded-lg font-semibold transition-colors`}
             >
               /test
             </Link>
             <Link
               href="/dynamic/demo"
-              className={`px-4 py-2 ${buttonColors[data.color as keyof typeof buttonColors]} text-white rounded-lg font-semibold transition-colors`}
+              className={`px-4 py-2 ${buttonColors[data.color]} text-white rounded-lg font-semibold transition-colors`}
             >
               /demo
             </Link>
             <Link
               href="/dynamic/cloudflare"
-              className={`px-4 py-2 ${buttonColors[data.color as keyof typeof buttonColors]} text-white rounded-lg font-semibold transition-colors`}
+              className={`px-4 py-2 ${buttonColors[data.color]} text-white rounded-lg font-semibold transition-colors`}
             >
               /cloudflare
             </Link>

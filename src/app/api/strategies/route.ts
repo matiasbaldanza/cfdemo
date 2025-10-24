@@ -1,6 +1,18 @@
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
 
+interface StrategyResponse {
+  ok: boolean
+  timestamp: string
+  strategy: string
+  message: string
+  cloudflare: {
+    ray: string | null
+    country: string | null
+    cacheStatus: string | null
+  }
+}
+
 export async function GET(request: Request) {
   const headersList = await headers()
   const url = new URL(request.url)
@@ -9,10 +21,11 @@ export async function GET(request: Request) {
   // Simulate processing time
   await new Promise(resolve => setTimeout(resolve, 150))
 
-  const baseData = {
+  const baseData: StrategyResponse = {
     ok: true,
     timestamp: new Date().toISOString(),
     strategy: strategy,
+    message: '', // Will be set based on strategy
     cloudflare: {
       ray: headersList.get("cf-ray") || null,
       country: headersList.get("cf-ipcountry") || null,
