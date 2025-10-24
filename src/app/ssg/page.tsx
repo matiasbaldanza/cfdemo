@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { getCacheStatusInfo } from '@/lib/cache-status'
 
 // This page is statically generated at build time
+export const revalidate = false // Disable ISR, make it truly static
+
 export default async function SSGPage() {
   const headersList = await headers()
   const cacheInfo = getCacheStatusInfo(headersList)
@@ -94,7 +96,19 @@ export default async function SSGPage() {
               <li>• <strong>Primera visita:</strong> <code className="bg-blue-100 px-1 rounded">MISS</code> - Página generada desde origen</li>
               <li>• <strong>Visitas posteriores:</strong> <code className="bg-blue-100 px-1 rounded">HIT</code> - Servida desde cache de Cloudflare</li>
               <li>• <strong>Cache permanente:</strong> Esta página se cachea indefinidamente hasta que se redeploye</li>
+              <li>• <strong>Headers configurados:</strong> <code className="bg-blue-100 px-1 rounded">Cache-Control: public, s-maxage=31536000</code></li>
               <li>• <strong>Sin Cloudflare:</strong> No aparecerá el header <code className="bg-blue-100 px-1 rounded">cf-cache-status</code></li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mt-4">
+            <h3 className="text-lg font-semibold text-yellow-800 mb-2">⚠️ Si sigue mostrando &quot;sin cache status&quot;:</h3>
+            <ul className="text-sm text-yellow-700 space-y-1">
+              <li>• Verifica que Cloudflare esté configurado como proxy (no solo DNS)</li>
+              <li>• Asegúrate de que las Page Rules estén configuradas correctamente</li>
+              <li>• Espera unos minutos después del deploy para que se propague</li>
+              <li>• Prueba accediendo desde diferentes ubicaciones/IPs</li>
+              <li>• Verifica que no estés usando &quot;Development Mode&quot; en Cloudflare</li>
             </ul>
           </div>
         </div>

@@ -11,9 +11,9 @@ export function getCacheStatusInfo(headersList: Headers) {
   // Determine cache status explanation
   let cacheStatusExplanation = ''
   if (!isCloudflare) {
-    cacheStatusExplanation = 'No protegido por Cloudflare'
+    cacheStatusExplanation = 'No protegido por Cloudflare - Los headers CF-* no están presentes'
   } else if (!cfCacheStatus) {
-    cacheStatusExplanation = 'Cloudflare activo, pero sin cache status (primera request o contenido no cacheable)'
+    cacheStatusExplanation = 'Cloudflare activo, pero sin cache status - Primera request o contenido no cacheable (verificar headers Cache-Control)'
   } else {
     switch (cfCacheStatus) {
       case 'HIT':
