@@ -1,9 +1,11 @@
 import { headers } from 'next/headers'
 import Link from 'next/link'
+import { getCacheStatusInfo } from '@/lib/cache-status'
 
 // This page is statically generated at build time
 export default async function SSGPage() {
   const headersList = await headers()
+  const cacheInfo = getCacheStatusInfo(headersList)
   const buildTime = new Date().toISOString()
 
   return (
@@ -57,22 +59,43 @@ export default async function SSGPage() {
               <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-700">CF-Ray:</span>
                 <span className="text-xs text-gray-600 font-mono">
-                  {headersList.get('cf-ray') || 'No disponible'}
+                  {cacheInfo.cfRay || 'No disponible'}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-700">CF-Cache-Status:</span>
                 <span className="text-xs text-gray-600 font-mono">
-                  {headersList.get('cf-cache-status') || 'No disponible'}
+                  {cacheInfo.cfCacheStatus || 'No disponible'}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-700">CF-IPCountry:</span>
                 <span className="text-xs text-gray-600 font-mono">
-                  {headersList.get('cf-ipcountry') || 'No disponible'}
+                  {cacheInfo.cfCountry || 'No disponible'}
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Cache Status Explanation */}
+        <div className="mt-8 bg-white rounded-xl p-6 shadow-lg">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            📊 Estado del Cache
+          </h2>
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg mb-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Explicación del Cache Status:</h3>
+            <p className="text-sm text-gray-700">{cacheInfo.cacheStatusExplanation}</p>
+          </div>
+
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">💡 Para SSG (Static Site Generation):</h3>
+            <ul className="text-sm text-blue-700 space-y-1">
+              <li>• <strong>Primera visita:</strong> <code className="bg-blue-100 px-1 rounded">MISS</code> - Página generada desde origen</li>
+              <li>• <strong>Visitas posteriores:</strong> <code className="bg-blue-100 px-1 rounded">HIT</code> - Servida desde cache de Cloudflare</li>
+              <li>• <strong>Cache permanente:</strong> Esta página se cachea indefinidamente hasta que se redeploye</li>
+              <li>• <strong>Sin Cloudflare:</strong> No aparecerá el header <code className="bg-blue-100 px-1 rounded">cf-cache-status</code></li>
+            </ul>
           </div>
         </div>
 

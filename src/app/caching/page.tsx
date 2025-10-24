@@ -1,8 +1,10 @@
 import { headers } from 'next/headers'
 import Link from 'next/link'
+import { getCacheStatusInfo } from '@/lib/cache-status'
 
 export default async function CachingPage() {
   const headersList = await headers()
+  const cacheInfo = getCacheStatusInfo(headersList)
 
   return (
     <main className="min-h-dvh bg-gradient-to-br from-slate-50 to-gray-100 p-8">
@@ -231,27 +233,33 @@ export default async function CachingPage() {
                 <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                   <span className="text-sm font-medium text-gray-700">CF-Ray:</span>
                   <span className="text-xs text-gray-600 font-mono">
-                    {headersList.get('cf-ray') || 'No disponible'}
+                    {cacheInfo.cfRay || 'No disponible'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                   <span className="text-sm font-medium text-gray-700">CF-Cache-Status:</span>
                   <span className="text-xs text-gray-600 font-mono">
-                    {headersList.get('cf-cache-status') || 'No disponible'}
+                    {cacheInfo.cfCacheStatus || 'No disponible'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                   <span className="text-sm font-medium text-gray-700">CF-IPCountry:</span>
                   <span className="text-xs text-gray-600 font-mono">
-                    {headersList.get('cf-ipcountry') || 'No disponible'}
+                    {cacheInfo.cfCountry || 'No disponible'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">CF-Connecting-IP:</span>
+                  <span className="text-xs text-gray-600 font-mono">
+                    {cacheInfo.cfConnectingIP || 'No disponible'}
                   </span>
                 </div>
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Estado:</h3>
-              {headersList.get('cf-ray') ? (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Estado del Cache:</h3>
+              {cacheInfo.isCloudflare ? (
+                <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-4">
                   <div className="flex items-center">
                     <span className="text-green-600 text-2xl mr-3">✅</span>
                     <div>
@@ -261,7 +269,7 @@ export default async function CachingPage() {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
                   <div className="flex items-center">
                     <span className="text-yellow-600 text-2xl mr-3">⚠️</span>
                     <div>
@@ -271,7 +279,25 @@ export default async function CachingPage() {
                   </div>
                 </div>
               )}
+
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-800 mb-2">Explicación del Cache Status:</h4>
+                <p className="text-sm text-gray-700">{cacheInfo.cacheStatusExplanation}</p>
+              </div>
             </div>
+          </div>
+
+          {/* Additional Info */}
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">💡 Información Importante</h3>
+            <ul className="text-sm text-blue-700 space-y-1">
+              <li>• <strong>CF-Cache-Status</strong> solo aparece cuando el contenido pasa por el cache de Cloudflare</li>
+              <li>• En desarrollo local o sin Cloudflare, este header no estará disponible</li>
+              <li>• Para ver el cache status, deploya la app y accede a través de Cloudflare</li>
+              <li>• Las páginas SSG mostrarán <code className="bg-blue-100 px-1 rounded">HIT</code> después del primer acceso</li>
+              <li>• Las páginas ISR mostrarán <code className="bg-blue-100 px-1 rounded">HIT</code> hasta que expire el cache</li>
+              <li>• Las páginas Dynamic mostrarán <code className="bg-blue-100 px-1 rounded">BYPASS</code> o no tendrán el header</li>
+            </ul>
           </div>
         </div>
       </div>
