@@ -53,6 +53,18 @@ export default async function Home() {
           </Link>
         </div>
 
+        {/* Caching Demo Link */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+          <h3 className="text-white font-semibold mb-4 text-lg">🧪 Demo de Caching</h3>
+          <p className="text-white/80 mb-4">Explora diferentes estrategias de cache con Cloudflare</p>
+          <Link
+            href="/caching"
+            className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-colors"
+          >
+            Ver Demo de Caching →
+          </Link>
+        </div>
+
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
